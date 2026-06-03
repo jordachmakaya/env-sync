@@ -1,5 +1,5 @@
 {
-  "name": "@hardmachinelab/env-sync",
+  "name": "@hardmachinelabs/env-sync",
   "version": "1.0.0",
   "description": "Sync .env files to CI/CD secrets — GitLab & GitHub, monorepo-aware",
   "author": "Jordach Makaya <hello@jordach.dev> (https://jordach.dev)",
