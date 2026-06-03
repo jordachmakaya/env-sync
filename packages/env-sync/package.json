@@ -1,0 +1,59 @@
+{
+  "name": "@jordachforge/env-sync",
+  "version": "1.0.0",
+  "description": "Sync .env files to CI/CD secrets — GitLab & GitHub, monorepo-aware",
+  "author": "Jordach Makaya <hello@jordach.dev> (https://jordach.dev)",
+  "license": "MIT",
+  "homepage": "https://github.com/hardmachinelab/env-sync#readme",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/hardmachinelab/env-sync.git"
+  },
+  "keywords": [
+    "env",
+    "dotenv",
+    "secrets",
+    "gitlab",
+    "github",
+    "ci",
+    "monorepo",
+    "devops",
+    "cli"
+  ],
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "bin": {
+    "env-sync": "./dist/cli.js"
+  },
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "lint": "eslint src --ext .ts",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "prepublishOnly": "pnpm run build && pnpm run typecheck"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.5"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "typescript": "^5.5.0",
+    "vitest": "^2.0.0"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  }
+}
