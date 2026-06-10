@@ -21,7 +21,7 @@ env-sync works for both simple projects and monorepos. It is monorepo-aware, not
 - npm package: https://www.npmjs.com/package/@hardmachinelabs/env-sync
 - Repository: https://github.com/jordachmakaya/env-sync
 
-## Quick example
+## Quick examples
 
 ```bash
 pnpm add -D @hardmachinelabs/env-sync
