@@ -1,0 +1,61 @@
+name: Release
+
+# Before running this workflow, bump the package version in packages/env-sync/package.json
+# and ensure the target version is not already published on npm.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  publish:
+    name: Publish to npm
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.22.0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+          registry-url: https://registry.npmjs.org
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Verify npm token
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          if [ -z "$NODE_AUTH_TOKEN" ]; then
+            echo "NPM_TOKEN is missing. Add it as a GitHub Actions secret before releasing."
+            exit 1
+          fi
+
+      - name: Typecheck
+        run: pnpm --filter @hardmachinelabs/env-sync run typecheck
+
+      - name: Test
+        run: pnpm --filter @hardmachinelabs/env-sync run test
+
+      - name: Build
+        run: pnpm --filter @hardmachinelabs/env-sync run build
+
+      - name: Verify package contents
+        run: pnpm --filter @hardmachinelabs/env-sync run pack:dry-run
+
+      - name: Publish package
+        working-directory: packages/env-sync
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: npm publish --access public --provenance

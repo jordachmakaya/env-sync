@@ -1,0 +1,51 @@
+name: Bug report
+description: Report a reproducible problem with env-sync.
+title: "Bug: "
+labels:
+  - bug
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting a problem. Do not include secrets, tokens, or full `.env` files.
+  - type: textarea
+    id: summary
+    attributes:
+      label: Summary
+      description: What went wrong?
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Reproduction steps
+      description: Provide the smallest safe reproduction you can share.
+      placeholder: |
+        1. Run `env-sync ...`
+        2. See error
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Package version
+      placeholder: 1.0.0
+    validations:
+      required: true
+  - type: dropdown
+    id: provider
+    attributes:
+      label: Provider
+      options:
+        - GitHub
+        - GitLab
+        - Both
+        - Not provider-specific
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Sanitized logs
+      description: Paste logs only after removing secrets, tokens, project IDs, and private URLs.
+      render: shell

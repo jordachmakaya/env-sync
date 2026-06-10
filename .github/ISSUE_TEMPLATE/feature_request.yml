@@ -1,0 +1,36 @@
+name: Feature request
+description: Suggest an improvement for env-sync.
+title: "Feature: "
+labels:
+  - enhancement
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+      description: What workflow or limitation should this improve?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed solution
+      description: What behavior would you like to see?
+    validations:
+      required: true
+  - type: dropdown
+    id: provider
+    attributes:
+      label: Provider
+      options:
+        - GitHub
+        - GitLab
+        - Both
+        - Not provider-specific
+    validations:
+      required: true
+  - type: textarea
+    id: notes
+    attributes:
+      label: Additional context
+      description: Add examples or constraints if useful. Do not include secrets.

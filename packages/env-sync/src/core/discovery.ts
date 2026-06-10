@@ -2,8 +2,8 @@
 // Discovers .env files across a monorepo tree.
 // Skips node_modules, .git, .idea, and dist directories.
 
-import { readdirSync, statSync,Dirent } from 'node:fs';
-import { join, relative } from 'node:path';
+import { readdirSync, statSync, Dirent } from 'node:fs';
+import { join, relative, sep } from 'node:path';
 
 
 const IGNORED_DIRS = new Set(['node_modules', '.git', '.idea', 'dist', '.turbo', '.cache']);
@@ -83,7 +83,7 @@ export function extractPackageName(filePath: string, root: string): string {
 export function computePriority(filePath: string, environment: string): number {
     let score = 0;
     if (environment && filePath.endsWith(`.env.${environment}`)) score += 100;
-    if (filePath.includes(`packages${require('node:path').sep}`) ||
+    if (filePath.includes(`packages${sep}`) ||
         filePath.includes('packages/') ||
         filePath.includes('packages\\')) score += 10;
     return score;

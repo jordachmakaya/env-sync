@@ -2,12 +2,20 @@
 // Pushes secrets to GitHub Actions via the gh CLI.
 // Requires: gh auth login with repo + secrets write scope.
 
-import { execSync } from 'node:child_process';
+import { execFileSync } from 'node:child_process';
 import type { SecretMap } from '../../types.js';
 import { logger } from '../../core/logger.js';
 
 interface GhSecret {
     name: string;
+}
+
+const GITHUB_SECRET_NAME_PATTERN = /^[A-Za-z_][A-Za-z0-9_]*$/;
+
+export function validateGitHubSecretName(key: string): void {
+    if (!GITHUB_SECRET_NAME_PATTERN.test(key) || key.toUpperCase().startsWith('GITHUB_')) {
+        throw new Error(`Invalid GitHub secret name: ${key}`);
+    }
 }
 
 /**
@@ -16,7 +24,7 @@ interface GhSecret {
  */
 export function assertGhCli(): void {
     try {
-        execSync('gh auth status', { stdio: 'pipe' });
+        execFileSync('gh', ['auth', 'status'], { stdio: 'pipe' });
     } catch {
         throw new Error(
             'GitHub CLI (gh) is not installed or not authenticated.\n' +
@@ -29,7 +37,7 @@ export function assertGhCli(): void {
  * Fetches existing secret names from the repository via gh CLI.
  */
 function fetchExistingSecrets(): ReadonlySet<string> {
-    const output = execSync('gh secret list --json name', { encoding: 'utf-8' });
+    const output = execFileSync('gh', ['secret', 'list', '--json', 'name'], { encoding: 'utf-8' });
     const parsed = JSON.parse(output) as ReadonlyArray<GhSecret>;
     return new Set(parsed.map((s) => s.name));
 }
@@ -38,8 +46,10 @@ function fetchExistingSecrets(): ReadonlySet<string> {
  * Pushes a single secret via gh CLI.
  */
 function setSecret(key: string, value: string): void {
+    validateGitHubSecretName(key);
+
     // Use stdin to avoid the value appearing in process list
-    execSync(`gh secret set ${key}`, {
+    execFileSync('gh', ['secret', 'set', key], {
         input: value,
         encoding: 'utf-8',
         stdio: ['pipe', 'pipe', 'pipe'],
@@ -54,6 +64,10 @@ export async function syncGitHubSecrets(
     secrets: SecretMap,
     dryRun:  boolean,
 ): Promise<{ created: string[]; updated: string[]; errors: Array<{ key: string; message: string }> }> {
+    for (const key of secrets.keys()) {
+        validateGitHubSecretName(key);
+    }
+
     assertGhCli();
 
     const existingKeys = fetchExistingSecrets();

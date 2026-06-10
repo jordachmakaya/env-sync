@@ -1,0 +1,46 @@
+name: Security
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 8 * * 1'
+
+permissions:
+  contents: read
+
+jobs:
+  snyk:
+    name: Snyk dependency scan
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.22.0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Verify Snyk token
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        run: |
+          if [ -z "$SNYK_TOKEN" ]; then
+            echo "SNYK_TOKEN is missing. Add it as a GitHub Actions secret before running the Snyk scan."
+            exit 1
+          fi
+
+      - name: Run Snyk test
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        run: pnpm dlx snyk@latest test --all-projects

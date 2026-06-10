@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 // src/cli.ts
-// CLI entrypoint for @hardmachinelab/env-sync
+// CLI entrypoint for @hardmachinelabs/env-sync
 
 import { resolve } from 'node:path';
 import { existsSync } from 'node:fs';

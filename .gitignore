@@ -1,11 +1,39 @@
-tmp
-out-tsc
-dits
-node_modules
+# Dependencies
+node_modules/
+**/node_modules/
+.pnpm-store/
+
+# Build outputs
+dist/
+**/dist/
+out-tsc/
+tmp/
+dits/
+INIT_PROJECT.md
+# Logs
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-/.pnp
+pnpm-debug.log*
+
+# Package manager internals
+.pnp
 .pnp.js
 
+# Local config / secrets
+.npmrc
+.env
+.env.*
+!.env.example
+
+# IDE
 .vscode/*
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# VitePress generated files
+docs/.vitepress/cache/
+docs/.vitepress/dist/
